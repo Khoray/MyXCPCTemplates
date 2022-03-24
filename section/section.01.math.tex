@@ -1,0 +1,83 @@
+\section{数学}
+%--------------------------------------------------------------------
+\subsection{欧拉筛/积性函数筛/线性筛}
+\begin{itemize}
+    \item 积性函数筛，$f(pq)=f(p)f(q),(p,q)=1$
+    \item calc\_f(val, power) 返回 $f(val^{power})$
+\end{itemize}
+\lstinputlisting{code/欧拉筛.cpp}
+%--------------------------------------------------------------------
+\subsection{快速幂}
+\lstinputlisting{code/ksm.cpp}
+
+%--------------------------------------------------------------------
+\subsection{组合数}
+\subsubsection{暴力}
+\begin{itemize}
+    \item 暴力求组合数 $\binom{n}{k}$, 时间复杂度 $O(\min(k, n - k))$.
+    \item 前置：快速幂
+    \item 模数必须是质数！
+\end{itemize}
+\lstinputlisting{code/暴力组合数.cpp}
+%--------------------------------------------------------------------
+\subsubsection{递推}
+\begin{itemize}
+    \item $O(n^2)$ 递推求，模数随意。
+\end{itemize}
+\lstinputlisting[]{code/递推组合数.cpp}
+%--------------------------------------------------------------------
+\subsubsection{逆元}
+\begin{itemize}
+    \item 模数必须是质数!
+    \item 前置：快速幂
+\end{itemize}
+\lstinputlisting{code/逆元组合数.cpp}
+%--------------------------------------------------------------------
+\subsection{ExGCD}
+\begin{itemize}
+    \item 求解 $ax+by=(a,b)$ 的特解 $x_0, y_0$.
+    \item 通解$x^* = x_0+\frac{bk}{(a,b)}, y^* = y_0-\frac{ak}{(a,b)}$ ( $k \in \mathbb{Z}$ ) .
+\end{itemize}
+\lstinputlisting{code/ExGCD.cpp}
+%--------------------------------------------------------------------
+\subsection{拉格朗日插值}
+\begin{itemize}
+    \item $f(x)$是多项式，并且我们知道一系列连续的点值 $f(l),\cdots,f(r)$ ，求解 $f(n)$。 $O(r-l)$
+    \item 前置：逆元组合数
+    \item 模数为质数
+\end{itemize}
+\lstinputlisting{code/拉格朗日插值.cpp}
+
+%--------------------------------------------------------------------
+\subsection{原根}
+若 $g$ 满足：
+\begin{equation*}
+    \begin{aligned}
+        (g,m)=1\\
+        \delta_m(g)=\varphi(m)
+    \end{aligned}
+\end{equation*}
+则 $g$ 为 $m$ 的原根。
+找所有原根：
+\begin{enumerate}
+    \item 找到最小的原根 $g$。如果一个数 $g$ 是原根，那么 $\forall p|\varphi(m):g^{\dfrac{\varphi(m)}{p}}\neq1$
+    \item 找小于 $m$ 与 $\varphi(m)$ 互质的数 $k$ ，则 $g^k$ 也是原根（能覆盖所有原根）个数为 $\varphi(\varphi(m))$ 个。
+\end{enumerate}
+题目：找出 $n$ 的所有原根，间隔 $d$ 输出。
+\lstinputlisting{code/原根.cpp}
+%--------------------------------------------------------------------
+%--------------------------------------------------------------------
+%--------------------------------------------------------------------
+
+
+%--------------------------------------------------------------------
+\subsection{多项式全家桶}
+\begin{itemize}
+    \item 注意调整原根g，模数mod，N开3到4倍数据范围，附录A
+    \item 注意resize()
+    \item 注意Inv/Ln的时候常数项不能为0
+    \item 注意Exp的时候常数项必须是0
+    \item 注意这里面的 ksm() 第三个参数是初值而不是模数
+\end{itemize}
+\lstinputlisting{code/NTT.cpp}
+
