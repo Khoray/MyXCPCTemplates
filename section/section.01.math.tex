@@ -85,11 +85,11 @@ BSGS
 
 当 $a\perp p$ 时，在模 $p$ 意义下 $a$ 存在逆元，因此可以使用 BSGS 算法求解。于是我们想办法让他们变得互质。
 
-具体地，设 $d_1=\gcd(a,p)$。如果 $d_1\mid b$，则原方程无解。否则我们把方程同时除以 $d_1$，得到
+具体地，设 $d_1=\gcd(a,p)$。如果 $d_1\nmid b$，则原方程无解。否则我们把方程同时除以 $d_1$，得到
 
 $$ \frac{a}{d_1}\cdot a^{x-1}\equiv \frac{b}{d_1}\pmod{\frac{p}{d_1}} $$
 
-如果 $a$ 和 $\frac{p}{d_1}$ 仍不互质就再除，设 $d_2=\gcd\left(a,\frac{p}{d_1}\right)$。如果 $d_2\mid \frac{b}{d_1}$，则方程无解；否则同时除以 $d_2$ 得到
+如果 $a$ 和 $\frac{p}{d_1}$ 仍不互质就再除，设 $d_2=\gcd\left(a,\frac{p}{d_1}\right)$。如果 $d_2\nmid \frac{b}{d_1}$，则方程无解；否则同时除以 $d_2$ 得到
 
 $$ \frac{a^2}{d_1d_2}\cdot a^{x-2}≡\frac{b}{d_1d_2} \pmod{\frac{p}{d_1d_2}} $$
 
@@ -133,9 +133,51 @@ $$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
 \end{itemize}
 \lstinputlisting{code/上下取整.cpp}
 %--------------------------------------------------------------------
+\subsection{线性基}
+\begin{itemize}
+    \item $O(\log x)$ insert
+    \item $O(\log^2 x)$ get-kth
+    \item $O(\log x)$ get-max
+    \item 如果问能否通过选一些数（不能不选）异或得到0，必须特判。
+\end{itemize}
+\lstinputlisting{code/线性基.cpp}
 %--------------------------------------------------------------------
+\subsection{高斯消元}
+\begin{itemize}
+    \item equ 是方程个数，n 是变元个数，答案存在 ans。
+    \item return : 无解(-1)，自由变元个数。
+\end{itemize}
+
+\subsubsection{解异或线性方程组}
+\lstinputlisting{code/01高斯消元.cpp}
+
+\subsubsection{解double线性方程组}
+\lstinputlisting{code/double高斯消元.cpp}
+
+\subsubsection{解模意义线性方程组}
+\begin{itemize}
+    \item 时间复杂度 $O(n^3 \log{mod})$
+\end{itemize}
+\lstinputlisting{code/模意义高斯消元.cpp}
 %--------------------------------------------------------------------
+\subsection{Miller-Rabin}
+\begin{itemize}
+    \item 前置：快速幂(\_\_int128!!!)
+    \item int 范围: {2, 7, 61}
+    \item long long 范围: {2, 325, 9375, 28178, 450775, 9780504, 1795265022}
+    \item 4E13: {2, 2570940, 211991001, 3749873356}
+    \item 3E15: {2, 2570940, 880937, 610386380, 4130785767}
+    \item 注意看判断范围是 int 还是 long long
+\end{itemize}
+
+\lstinputlisting{code/miller-rabin.cpp}
 %--------------------------------------------------------------------
+\subsection{Pollard-Rho}
+\begin{itemize}
+    \item 前置：Miller-Rabin
+\end{itemize}
+
+\lstinputlisting{code/Pollard-Rho.cpp}
 %--------------------------------------------------------------------
 
 
@@ -152,4 +194,211 @@ $$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
 
 %--------------------------------------------------------------------
 \subsection{数学公式}
-\subsubsection{}
+
+\subsubsection{多项式牛顿迭代}
+
+
+\subsubsection{生成函数/形式幂级数}
+
+\subsubsection{莫比乌斯反演}
+
+\subsubsection{分配问题}
+
+\begin{enumerate}
+    \item $n$ 个球放到 $k$ 个盒子，每个盒子只有一种形态。
+
+    $$
+    \begin{array}{cc|cc}
+    \hline n \text { 个球 } & k \text { 个盒子 } & \text { 盒子可以为空 } & \text { 每个盒子内至少有一个球 } \\
+    \hline \text { 有标号 } & \text { 有标号 } & k^{n} & k ! S_{2}(n, k) \\
+    \text { 有标号 } & \text { 无标号 } & \sum_{i=1}^{k} S_{2}(n, i) & S_{2}(n, k) \\
+    \text { 无标号 } & \text { 有标号 } & C(n+k-1, k-1) & C(n-1, k-1) \\
+    \text { 无标号 } & \text { 无标号 } & p(n+k, k) & p(n, k) \\
+    \hline
+    \end{array}
+    $$
+
+    其中 $S_2(n,k)$ 为第二类 `Stirling数` ，$p(n,k)$ 为 `分拆数`
+
+    \item $n$ 个球放到 $k$ 个盒子, 每个盒子至少一个球，装有 $i$ 个球的盒子有 $f_i$ ($i\ge1$) 种形态。
+
+    $F(x) $ 是 $f_i$ 的 $o.g.f.$ ，$E(x)$ 是 $f_i$ 的 $e.g.f.$
+    $$
+    \begin{array}{cc|c}
+    \hline n \text { 个球 } & k \text { 个盒子 } & \text { 关于 $n$ 方案的生成函数 } \\
+    \hline \text { 有标号 } & \text { 有标号 } & e . g . f=E(x)^{k} \\
+    \text { 有标号 } & \text { 无标号 } &  { e.g.f }=\frac{1}{k !} E(x)^{k} \\
+    \text { 无标号 } & \text { 有标号 } &  { o.g.f }=F(x)^{k} \\
+    \text { 无标号 } & \text { 无标号 } & \text { 不会 } \\
+    \hline
+    \end{array}
+    $$
+
+
+    \item $n$ 个球放到若干盒子，每个盒子至少一个球，装有 $i$ 个球的盒子有 $f_i$ ($i\ge1$) 种形态.
+
+    $$
+    \begin{array}{cc|c}
+    \hline n \text { 个球 } & \text { 盒子 } & \text { 方案的生成函数 } \\
+    \hline \text { 有标号 } & \text { 有标号 } & e . g . f=\frac{1}{1-E(x)} \\
+    \text { 有标号 } & \text { 无标号 } &  { e.g.f }=\exp (E(x)) \\
+    \text { 无标号 } & \text { 有标号 } &  { o.g.f }=\frac{1}{1-F(x)} \\
+    \text { 无标号 } & \text { 无标号 } & o . g . f=\prod_{i \geq 1}\left(\frac{1}{1-x^{i}}\right)^{f_{i}}=\exp \left(\sum_{j \geq 1} \frac{1}{j} F\left(x^{j}\right)\right) \\
+    \hline
+    \end{array}
+    $$
+\end{enumerate}
+
+\subsubsection{第二类斯特林数}
+
+性质：
+\begin{enumerate}
+    \item ${n\brace k}={n-1\brace k-1}+k{n-1\brace k}$ 边界条件 ${x\neq 1\brace 0}=0,{0\brace 0}=1$
+    \item ${n\brace k}=\frac{1}{k!}\sum\limits_{i=0}^{k}(-1)^i\binom{k}{i}(k-i)^{n}$ （用来求第二类斯特林数·行，考虑容斥）
+    \item $k^n=\sum\limits_{i=0}^k {n\brace i} k^{\underline{i}}$ （性质 2 的反演）
+    \item 重要公式：$x^n=\sum\limits_{k=0}^{n}{n\brace k}x^{\underline k}$ （基于 3，$x$ 个球 $n$ 个盒子）
+    \item 关于 $n$ 的 $e.g.f.=\dfrac{(e^x-1)^k}{k!}$ （考虑将 $n$ 个物品染成 $k$ 种颜色，每一种物品的指数生成函数为 $e^x-1$ ）（用于求第二类斯特林数·列）
+\end{enumerate}
+
+\subsubsection{第一类斯特林数}
+
+性质：
+\begin{enumerate}
+    \item ${n\brack k}={n-1\brack k-1}+(n-1){n-1\brack k}$ 边界条件 ${x\neq1\brack 0}=0,{0\brack 0}=1$
+    \item 重要公式：$x^{\overline n}=\sum\limits_{k=0}^{n}{n\brack k}x^n$ （$x$ 个球 $n$ 个盒子）(用于计算第一类斯特林数·行)
+    \item 有符号的第一类斯特林数：$S_1(n,k)=(-1)^{n+k}{n\brack k}$
+    
+    $x^{\underline n}=\sum\limits_{k=0}^{n}S_1(n,k)x^n$
+    \item 关于 $n$ 的 $e.g.f.=\dfrac{(-\ln(1-x))^k}{k!}$. (列)
+\end{enumerate}
+
+\subsubsection{分拆数}
+
+性质：
+\begin{enumerate}
+    \item $p(n,k)=p(n-1,k-1)+p(n-k,k)$
+    \item $o.g.f. = x^k \prod\limits_{i=1}^k \frac{1}{1-x^i}$ （考虑 Ferrers 图中长度为 $i$ 的一列有多少个）
+\end{enumerate}
+
+\subsubsection{五边形数}
+
+性质：
+\begin{enumerate}
+    \item $p(n)=\sum\limits_{k=1}^{n}p(n,k)$
+    \item $o.g.f.=\prod\limits_{i\ge1}{\frac{1}{1-x^i}}$\\
+    考虑求 $\ln$ , $o.g.f.=\exp(\sum_{n\ge1}{\sum_{d\mid n} {\frac{x^n}{d}}})$ $O(n\log{n})$
+    \item 递推公式：
+        \begin{enumerate}
+            \item 考虑 $Q(x)=\prod_{i\ge1}(1-x^i)$
+            \item $Q(x)=\sum_{n\ge0}(q_{even}(n)-q_{odd}(n))x^n，其中 $ $q_{even/odd}$ 表示有偶数/奇数行，每一行的个数都不相同，大部分 $q_{even}(n)$ 和 $q_{odd}(n)$ 抵消，小部分也就是有 $b$ 行，$n=\frac{b(3b-1)}{2}$ 和 $n=\frac{b(3b+1)}{2}$ 无法抵消。其系数都是 $(-1)^b$
+            \item 则 $Q(x)=1+\sum_{i\ge1}(-1)^ix^{\dfrac{(3i\pm1)i}{2}}$
+            \item $P(x)=Q^{-1}(x)$ 则，$p(n)=\sum_{k\ge1}(-1)^{k-1}\left(p\left(n-\dfrac{(3k-1)k}{2}\right)+p\left(n-\dfrac{(3k+1)k}{2}\right)\right)$
+        \end{enumerate}
+\end{enumerate}
+
+\subsubsection{Polya}
+
+\paragraph{置换群}\
+
+$G$ 是置换的集合，$◦$ 是置换的复合，且 $(G, ◦)$ 为一个群时，称 $(G, ◦)$ 为一个置换群。 \\
+
+
+\noindent 旋转群：
+
+设 $n$ 元环的 $n$ 个结点分别为 $a_1,a_2, ...,a_n$，旋转操作可以看成 $A = {a_1, ..., a_n}$ 上的 $n$ 个置换，其中第 $i$ 个置换为 $g_i = [i + 1,i + 2, ...,n,1, ...,i]$。 
+
+设集合 $G= \{g_0,g_1, ...,g_{n−1}\}$，则 $(G,◦)$ 是一个置换群，称为正 $n$ 边形的旋转群。\\
+
+\paragraph{群对集合的作用}\
+
+一个操作会将一个对象改变为另一个对象，形式化地：
+
+设 $(G, \circ)$ 是一个群, 其单位元为 $e, X$ 是一个集合, 群 $G$ 对集合 $X$ 的一个作用是一个 $G \times X$ 到 $X$ 的映射 $f$, 满足:
+
+\begin{itemize}
+    \item $\forall x \in X . f(e, x)=x$
+    \item $\forall g, h \in G . f(h \circ g, x)=f(h, f(g, x))$
+    我们把 $f(g, x)$ 简记成 $g_{f}(x)$ 或（在没有歧义的情况下记成） $g(x)$ 。
+\end{itemize}
+
+\begin{itemize}
+    \item 设 $n$ 元环的 $n$ 个结点分别为 $a_{1}, a_{2}, \ldots, a_{n}$, 令 $A=\left\{a_{1}, \ldots, a_{n}\right\}$ 。设颜色集合为 $B=\left\{b_{1}, b_{2}, \ldots, b_{m}\right\}$ 。给 $n$ 元环染色可以看成 $A$ 到 $B$ 的一个映射 $x: A \rightarrow B$, 令 $X$ 是 所有这些映射的集合, 即 $X=\{x \mid x: A \rightarrow B\}$ 。
+    \item 令 $G=\left\{g_{0}, g_{1}, \ldots, g_{n-1}\right\}$ 是正 $n$ 边形的旋转群, 定义 $G \times X$ 到集合 $X$ 的映射 $f$, 其中 $\forall i=0 . . n-1, x \in X . y=f\left(g_{i}, x\right)$ 满足 $\forall j=1 . . n . y\left(a_{j}\right)=x\left(g_{i}\left(a_{j}\right)\right)$, 可以证明 $f$ 是群 $G$ 到集合 $X$ 的一个作用, 因此我们简记 $y=f\left(g_{i}, x\right)$ 为 $y=g_{i}(x)$ 。
+    \item $X$ 上的 $G$ 关系为 $R_{G}=\{(x, y) \mid x, y \in X \wedge(\exists g \in G . y=g(x))\}, x R_{G} y$ 当且仅当染色 方案 $x$ 能通过旋转得到 $y$ 。
+\end{itemize}
+
+要求所有不同的染色方案, 即是求 $X$ 上的 $G$-轨道的数量。\\
+
+\paragraph{Burnside 引理}\
+
+设有限群 $(G, \circ)$ 作用在有限集 $X$ 上, 则 $X$ 上的 $G$-轨道数量为
+$$
+N=\frac{1}{|G|} \sum_{g \in G} \Psi(g)
+$$
+其中 $\Psi(g)$ 表示 $g(x)=x$ 的 $x$ 的数量。\\
+
+\paragraph{轮换指标}\
+
+设 $(G, \circ)$ 是一个 $n$ 元置换的置换群, 它的轮换指标为
+$$
+P_{G}\left(x_{1}, x_{2}, \ldots, x_{n}\right)=\frac{1}{|G|} \sum_{g \in G} x_{1}^{b_{1}} x_{2}^{b_{2}} \ldots x_{n}^{b_{n}}
+$$
+$x_i^{b_i}$ 表示 $g$ 这个置换的长度为 $i$ 的环有 $b_i$ 个。
+
+正 $n$ 边形旋转群轮换指标:
+
+$$
+P_G=\frac{1}{n}\sum_{d\mid n}\varphi(d)x_d^{n/d}
+$$
+
+正 $n$ 边形二面体群轮换指标(即可对称):
+
+$$
+P_{G}=\frac{1}{2 n} \sum_{d \mid n} \varphi(d) x_{d}^{n / d}+\left\{\begin{array}{ll}
+\frac{1}{2} x_{1} x_{2}^{\frac{n-1}{2}}, \quad &n \text { 为奇数 } \\
+\frac{1}{4}\left(x_{2}^{\frac{n}{2}}+x_{1}^{2} x_{2}^{\frac{n-2}{2}}\right), &n \text { 为偶数 }
+\end{array}\right.
+$$
+
+正方体置换群：
+
+顶点置换群:
+
+$$
+P_{G}=\frac{1}{24}\left(x_{1}^{8}+8 x_{1}^{2} x_{3}^{2}+9 x_{2}^{4}+6 x_{4}^{2}\right)
+$$
+
+边置换群:
+
+$$
+P_{G}=\frac{1}{24}\left(x_{1}^{12}+8 x_{3}^{4}+6 x_{1}^{2} x_{2}^{5}+3 x_{2}^{6}+6 x_{4}^{3}\right)
+$$
+
+面置换群：
+
+$$
+P_{G}=\frac{1}{24}\left(x_{1}^{6}+8 x_{3}^{2}+6 x_{2}^{3}+3 x_{1}^{2} x_{2}^{2}+6 x_{1}^{2} x_{4}\right)
+$$
+
+
+
+\paragraph{Polya 定理}\
+
+集合 $X$ 可以看成是给集合 $A=\left\{a_{1}, a_{2}, \ldots, a_{n}\right\}$ 的每个元素赋予式样（颜色, 种类等） 的映射的集合
+
+引入表示式样的集合 $B$, 令 $X=\{x \mid x: A \rightarrow B\}$, 记为 $B^{A}$
+
+\textbf{式样清单}: $G$ 作用在 $B^{A}$ 上的 $G$-轨道的集合称为 $B^{A}$ 关于 $G$ 的\textbf{式样清单}，记为 $F$
+
+种类的权值: 假设 $B$ 上的每个元素 $b$ 都赋予了权值 $w(b)$
+
+$f \in B^{A}$ 的权值: 定义 $w(f):=\prod_{a \in A} w(f(a))$
+
+$G$-轨道的权值: $w(F):=w(f)$, 任选一个 $f \in F$
+
+定理：
+
+$B^{A}$ 关于 $G$ 的\textbf{式样清单}记为 $\mathcal{F}$, 则
+$$
+\sum_{F \in \mathcal{F}} w(F)=P_{G}\left(\sum_{b \in B} w(b), \sum_{b \in B} w(b)^{2}, \ldots, \sum_{b \in B} w(b)^{n}\right)
+$$

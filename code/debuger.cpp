@@ -1,3 +1,6 @@
+#include<bits/stdc++.h>
+using namespace std;
+
 #define out(args...) { cout << "Line " << __LINE__ << ": [" << #args << "] = ["; debug(args); cout << "]\n"; }
 
 template<typename T> void debug(T a) { cout << a; }
@@ -49,14 +52,13 @@ ostream& operator << (ostream &os, const pair<A, B> &a) {
 	return os;
 }
 
-template<typename A, typename B, typename C>
-ostream& operator << (ostream &os, const tuple<A, B, C> &a) {
-	os << "(" << get<0>(a) << ", " << get<1>(a) << ", " << get<2>(a) << ")";
-	return os;
-}
-
-template<typename A, typename B, typename C, typename D>
-ostream& operator << (ostream &os, const tuple<A, B, C, D> &a) {
-	os << "(" << get<0>(a) << ", " << get<1>(a) << ", " << get<2>(a) << ", " << get<3>(a) << ")";
+template<typename A, size_t N>
+ostream& operator << (ostream &os, const array<A, N> &a) {
+	os << "{";
+	int f = 0; 
+	for(int i = 0; i < N; i++) {
+		os << (f++ ? ", " : "") << a[i];
+	}
+	os << "}";
 	return os;
 }

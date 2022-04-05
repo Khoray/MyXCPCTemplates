@@ -11,9 +11,9 @@ class Cipolla {
     using pll = pair<ll, ll>;
 #define X first
 #define Y second
-    ll mul(ll a, ll b) const { return a * b % mod; }
-    pll mul(pll a, pll b) const { return {(a.X * b.X + I2 * a.Y % mod * b.Y) % mod, (a.X * b.Y + a.Y * b.X) % mod}; }
-    template<class T> T ksm(T a, int b, T x) { for (; b; b >>= 1, a = mul(a, a)) if (b & 1) x = mul(x, a); return x; }
+    ll MUL(ll a, ll b) const { return a * b % mod; }
+    pll MUL(pll a, pll b) const { return {(a.X * b.X + I2 * a.Y % mod * b.Y) % mod, (a.X * b.Y + a.Y * b.X) % mod}; }
+    template<class T> T ksm(T a, int b, T x) { for (; b; b >>= 1, a = MUL(a, a)) if (b & 1) x = MUL(x, a); return x; }
 public:
     Cipolla(int p = 0) : mod(p) {}
     pair<int, int> sqrt(int n) {
@@ -29,10 +29,10 @@ public:
 #undef Y
 };
 /*--------------------------------------Modular----------------------------------*/
-#define mul(a, b) (ll(a) * (b) % mod)
-#define add(a, b) (((a) += (b)) >= mod ? (a) -= mod : 0) // (a += b) %= P
-#define dec(a, b) (((a) -= (b)) < 0 ? (a) += mod: 0)  // ((a -= b) += P) %= P
-Poly getInv(int L) { Poly inv(L); inv[1] = 1; fp(i, 2, L - 1) inv[i] = mul((mod - mod / i), inv[mod % i]); return inv; }
+#define MUL(a, b) (ll(a) * (b) % mod)
+#define ADD(a, b) (((a) += (b)) >= mod ? (a) -= mod : 0) // (a += b) %= P
+#define DEC(a, b) (((a) -= (b)) < 0 ? (a) += mod: 0)  // ((a -= b) += P) %= P
+Poly getInv(int L) { Poly inv(L); inv[1] = 1; fp(i, 2, L - 1) inv[i] = MUL((mod - mod / i), inv[mod % i]); return inv; }
 int ksm(ll a, int b = mod - 2, ll x = 1) { for (; b; b >>= 1, a = a * a % mod) if (b & 1) x = x * a % mod; return x; }
 auto inv = getInv(N); // NOLINT
 /*----------------------------------NTT--------------------------------------*/
@@ -41,7 +41,7 @@ namespace NTT {
     Poly Omega(int L) {
         int wn = ksm(g, mod / L);
         Poly w(L); w[L >> 1] = 1;
-        fp(i, L / 2 + 1, L - 1) w[i] = mul(w[i - 1], wn);
+        fp(i, L / 2 + 1, L - 1) w[i] = MUL(w[i - 1], wn);
         fd(i, L / 2 - 1, 1) w[i] = w[i << 1];
         return w;
     }
@@ -50,16 +50,16 @@ namespace NTT {
         for (int k = n >> 1; k; k >>= 1)
             for (int i = 0, y; i < n; i += k << 1)
                 for (int j = 0; j < k; ++j)
-                    y = a[i + j + k], a[i + j + k] = mul(a[i + j] - y + mod, W[k + j]), add(a[i + j], y);
+                    y = a[i + j + k], a[i + j + k] = MUL(a[i + j] - y + mod, W[k + j]), ADD(a[i + j], y);
     }
     void IDIT(int *a, int n) {
         for (int k = 1; k < n; k <<= 1)
             for (int i = 0, x, y; i < n; i += k << 1)
                 for (int j = 0; j < k; ++j)
-                    x = a[i + j], y = mul(a[i + j + k], W[k + j]),
-                    a[i + j + k] = x - y < 0 ? x - y + mod : x - y, add(a[i + j], y);
+                    x = a[i + j], y = MUL(a[i + j + k], W[k + j]),
+                    a[i + j + k] = x - y < 0 ? x - y + mod : x - y, ADD(a[i + j], y);
         int Inv = mod - (mod - 1) / n;
-        fp(i, 0, n - 1) a[i] = mul(a[i], Inv);
+        fp(i, 0, n - 1) a[i] = MUL(a[i], Inv);
         reverse(a + 1, a + n);
     }
 }
@@ -70,30 +70,30 @@ namespace Polynomial {
     void norm(Poly &a) { if (!a.empty()) a.resize(norm(a.size()), 0); else a = {0}; }
     void DFT(Poly &a) { NTT::DIF(a.data(), a.size()); }
     void IDFT(Poly &a) { NTT::IDIT(a.data(), a.size()); }
-    Poly &dot(Poly &a, Poly &b) { fp(i, 0, a.size() - 1) a[i] = mul(a[i], b[i]); return a; }
+    Poly &dot(Poly &a, Poly &b) { fp(i, 0, a.size() - 1) a[i] = MUL(a[i], b[i]); return a; }
     
-    // mul / div int
-    Poly &operator*=(Poly &a, int b) { for (auto &x : a) x = mul(x, b); return a; }
+    // MUL / div int
+    Poly &operator*=(Poly &a, int b) { for (auto &x : a) x = MUL(x, b); return a; }
     Poly operator*(Poly a, int b) { return a *= b; }
     Poly operator*(int a, Poly b) { return b * a; }
     Poly &operator/=(Poly &a, int b) { return a *= ksm(b); }
     Poly operator/(Poly a, int b) { return a /= b; }
 
-    // Poly add / sub
+    // Poly ADD / sub
     Poly &operator+=(Poly &a, Poly b) {
         a.resize(max(a.size(), b.size()));
-        fp(i, 0, b.size() - 1) add(a[i], b[i]);
+        fp(i, 0, b.size() - 1) ADD(a[i], b[i]);
         return a;
     }
     Poly operator+(Poly a, Poly b) { return a += b; }
     Poly &operator-=(Poly &a, Poly b) {
         a.resize(max(a.size(), b.size()));
-        fp(i, 0, b.size() - 1) dec(a[i], b[i]);
+        fp(i, 0, b.size() - 1) DEC(a[i], b[i]);
         return a;
     }
     Poly operator-(Poly a, Poly b) { return a -= b; }
 
-    // Poly mul
+    // Poly MUL
     Poly operator*(Poly a, Poly b) {
         int n = a.size() + b.size() - 1, L = norm(n);
         if (a.size() <= 8 || b.size() <= 8) {
@@ -141,12 +141,12 @@ namespace Polynomial {
     
     // Poly calculus
     Poly deriv(Poly a) {
-        fp(i, 1, a.size() - 1) a[i - 1] = mul(i, a[i]);
+        fp(i, 1, a.size() - 1) a[i - 1] = MUL(i, a[i]);
         return a.pop_back(), a;
     }
     Poly integ(Poly a) {
         a.push_back(0);
-        fd(i, a.size() - 1, 1) a[i] = mul(inv[i], a[i - 1]);
+        fd(i, a.size() - 1, 1) a[i] = MUL(inv[i], a[i - 1]);
         return a[0] = 0, a;
     }
 
@@ -164,7 +164,7 @@ namespace Polynomial {
         for (int L = 2; L <= k; L <<= 1) {
             d = b, b.resize(L), c = Ln(b), c.resize(L);
             fp(i, 0, L - 1) c[i] = a[i] - c[i] + (a[i] < c[i] ? mod : 0);
-            add(c[0], 1), DFT(b), DFT(c), dot(b, c), IDFT(b);
+            ADD(c[0], 1), DFT(b), DFT(c), dot(b, c), IDFT(b);
             move(d.begin(), d.end(), b.begin());
         }
         return b.resize(n), b;
@@ -176,7 +176,7 @@ namespace Polynomial {
         Poly b = {(new Cipolla(mod))->sqrt(a[0]).first, 0}, c;
         for (int L = 2; L <= k; L <<= 1) {
             b.resize(L), c = Poly(a.begin(), a.begin() + L) * Inv2k(b);
-            fp(i, L / 2, L - 1) b[i] = mul(c[i], (mod + 1) / 2);
+            fp(i, L / 2, L - 1) b[i] = MUL(c[i], (mod + 1) / 2);
         }
         return b.resize(n), b;
     }
