@@ -1,208 +1,51 @@
-\section{数学}
-%--------------------------------------------------------------------
-\subsection{欧拉筛/积性函数筛/线性筛}
-\begin{itemize}
-    \item 积性函数筛，$f(pq)=f(p)f(q),(p,q)=1$
-    \item calc\_f(val, power) 返回 $f(val^{power})$
-\end{itemize}
-\lstinputlisting{code/欧拉筛.cpp}
-%--------------------------------------------------------------------
-\subsection{快速幂}
-\lstinputlisting{code/ksm.cpp}
+\section{Math Formula}
 
-%--------------------------------------------------------------------
-\subsection{组合数}
-\subsubsection{暴力}
-\begin{itemize}
-    \item 暴力求组合数 $\binom{n}{k}$, 时间复杂度 $O(\min(k, n - k))$.
-    \item 前置：快速幂
-    \item 模数必须是质数！
-\end{itemize}
-\lstinputlisting{code/暴力组合数.cpp}
-%--------------------------------------------------------------------
-\subsubsection{递推}
-\begin{itemize}
-    \item $O(n^2)$ 递推求，模数随意。
-\end{itemize}
-\lstinputlisting[]{code/递推组合数.cpp}
-%--------------------------------------------------------------------
-\subsubsection{逆元}
-\begin{itemize}
-    \item 模数必须是质数!
-    \item 前置：快速幂
-\end{itemize}
-\lstinputlisting{code/逆元组合数.cpp}
-%--------------------------------------------------------------------
-\subsection{ExGCD}
-\begin{itemize}
-    \item 求解 $ax+by=(a,b)$ 的特解 $x_0, y_0$.
-    \item 通解$x^* = x_0+\frac{bk}{(a,b)}, y^* = y_0-\frac{ak}{(a,b)}$ ( $k \in \mathbb{Z}$ ) .
-\end{itemize}
-\lstinputlisting{code/ExGCD.cpp}
-%--------------------------------------------------------------------
-\subsection{拉格朗日插值}
-\begin{itemize}
-    \item $f(x)$是多项式，并且我们知道一系列连续的点值 $f(l),\cdots,f(r)$ ，求解 $f(n)$。 $O(r-l)$
-    \item 前置：逆元组合数
-    \item 模数为质数
-\end{itemize}
-\lstinputlisting{code/拉格朗日插值.cpp}
+\subsection{多项式牛顿迭代}
 
-%--------------------------------------------------------------------
-\subsection{原根} % TODO, modify phi[n] in code
-若 $g$ 满足：
+
+\subsection{生成函数/形式幂级数}
+
+\subsection{数论公式}
+\subsubsection{莫比乌斯反演}
+一般反演:
 \begin{equation*}
     \begin{aligned}
-        (g,m)=1\\
-        \delta_m(g)=\phi(m)
+        f(n)=\sum_{d\mid n}g(d) \Longleftrightarrow g(n)=\sum_{d\mid n} \mu (d)f(\frac{n}{d})\\
+        f(n)=\sum_{\substack{n\mid d\\ d\le N}}g(d) \Longleftrightarrow g(n)=\sum_{\substack{n\mid d\\ d\le N}} \mu (\frac{d}{n})f(d)
     \end{aligned}
 \end{equation*}
-则 $g$ 为 $m$ 的原根。
-找所有原根：
-\begin{enumerate}
-    \item 找到最小的原根 $g$。如果一个数 $g$ 是原根，那么 $\forall p|\phi(m):g^{\dfrac{\phi(m)}{p}}\neq1$
-    \item 找小于 $m$ 与 $\phi(m)$ 互质的数 $k$ ，则 $g^k$ 也是原根（能覆盖所有原根）个数为 $\phi(\phi(m))$ 个。
-\end{enumerate}
-题目：找出 $n$ 的所有原根，间隔 $d$ 输出。
-\lstinputlisting{code/原根.cpp}
-%--------------------------------------------------------------------
 
-\subsection{Ex-Baby-Step-Giant-Step-Algorithm}
+gcd 反演结论:
+\begin{equation*}
+    [\operatorname{gcd}(i, j)=1]=\sum_{d \mid \operatorname{gcd}(i, j)} \mu(d)
+\end{equation*}
+\subsubsection{杜教筛}
+\begin{equation*}
+    g(1) S(n)=\sum_{i=1}^{n}(f * g)(i)-\sum_{i=2}^{n} g(i) S\left(\left\lfloor\frac{n}{i}\right\rfloor\right)
+\end{equation*}
+\subsubsection{Min\_25筛/Ex-Eratosthenes-Sieve}
+第一步：筛出所有质数部分（此处的$g(n)$是$f(n),n\in \mathbb{P}$的通项公式）
+\begin{equation*}
+    \begin{array}{c}
+        G_{k}(n):=\sum_{i=1}^{n}\left[p_{k}<\operatorname{lpf}(i) \vee \operatorname{isprime}(i)\right] g(i)\\
+        G_{k}(n)=G_{k-1}(n)-\left[p_{k}^{2} \leq n\right] g\left(p_{k}\right)\left(G_{k-1}\left(n / p_{k}\right)-G_{k-1}\left(p_{k-1}\right)\right)
+    \end{array}
+\end{equation*}
+第二部：筛出质数和合数部分,我们令 $F_{\text{prime}}(n)=\sum_{\substack{2\le p\le n\\ p\in \text{prime}}}f(p)$
+\begin{equation*}
+    \begin{aligned} 
+        F_{k}(n) &= \sum_{i = 2}^{n} [p_{k} \le \operatorname{lpf}(i)] f(i) \ \\
+        &= \sum_{\substack{k \le i \\ p_{i}^{2} \le n}} \sum_{\substack{c \ge 1 \\ p_{i}^{c} \le n}} f\left(p_{i}^{c}\right) ([c > 1] + F_{i + 1}\left(n / p_{i}^{c}\right)) + \sum_{\substack{k \le i \\ p_{i} \le n}} f(p_{i}) \ \\
+        &{= \sum_{\substack{k \le i \\ p_{i}^{2} \le n}} \sum_{\substack{c \ge 1 \\ p_{i}^{c} \le n}} f\left(p_{i}^{c}\right) ([c > 1] + F_{i + 1}\left(n / p_{i}^{c}\right)) + F_{\mathrm{prime}}(n) - F_{\mathrm{prime}}(p_{k - 1})}\text{常用！！} \ \\
+        &= \sum_{\substack{k \le i \\ p_{i}^{2} \le n}} \sum_{\substack{c \ge 1 \\ p_{i}^{c + 1} \le n}} \left(f\left(p_{i}^{c}\right) F_{i + 1}\left(n / p_{i}^{c}\right) + f\left(p_{i}^{c + 1}\right)\right) + F_{\mathrm{prime}}(n) - F_{\mathrm{prime}}(p_{k - 1}) 
+    \end{aligned}
+\end{equation*}
 
-BSGS
-
-求解 $a^x=b\pmod{p}, (0\le x< p)$
-
-令 $x = A \left \lceil \sqrt p \right \rceil - B$，其中 $0\le A,B \le \left \lceil \sqrt p \right \rceil$，则有 $a^{A\left \lceil \sqrt p \right \rceil -B} \equiv b \pmod p$，稍加变换，则有 $a^{A\left \lceil \sqrt p \right \rceil} \equiv ba^B \pmod p$。
-
-我们已知的是 $a,b$，所以我们可以先算出等式右边的 $ba^B$ 的所有取值，枚举 $B$，用 `hash`/`map` 存下来，然后逐一计算 $a^{A\left \lceil \sqrt p \right \rceil}$，枚举 $A$，寻找是否有与之相等的 $ba^B$，从而我们可以得到所有的 $x$，$x=A \left \lceil \sqrt p \right \rceil - B$。
-
-注意到 $A,B$ 均小于 $\left \lceil \sqrt p \right \rceil$，所以时间复杂度为 $\Theta\left (\sqrt p\right )$，用 `map` 则多一个 $\log$。
-
-\noindent exBSGS
-
-其中 $a,p$ 不一定互质。
-
-当 $a\perp p$ 时，在模 $p$ 意义下 $a$ 存在逆元，因此可以使用 BSGS 算法求解。于是我们想办法让他们变得互质。
-
-具体地，设 $d_1=\gcd(a,p)$。如果 $d_1\nmid b$，则原方程无解。否则我们把方程同时除以 $d_1$，得到
-
-$$ \frac{a}{d_1}\cdot a^{x-1}\equiv \frac{b}{d_1}\pmod{\frac{p}{d_1}} $$
-
-如果 $a$ 和 $\frac{p}{d_1}$ 仍不互质就再除，设 $d_2=\gcd\left(a,\frac{p}{d_1}\right)$。如果 $d_2\nmid \frac{b}{d_1}$，则方程无解；否则同时除以 $d_2$ 得到
-
-$$ \frac{a^2}{d_1d_2}\cdot a^{x-2}≡\frac{b}{d_1d_2} \pmod{\frac{p}{d_1d_2}} $$
-
-同理，这样不停的判断下去。直到 $a\perp \frac{p}{d_1d_2\cdots d_k}$。
-
-记 $D=\prod_{i=1}^kd_i$，于是方程就变成了这样：
-
-$$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
-
-由于 $a\perp\frac{p}{D}$，于是推出 $\frac{a^k}{D}\perp \frac{p}{D}$。这样 $\frac{a^k}{D}$ 就有逆元了，于是把它丢到方程右边，这就是一个普通的 BSGS 问题了，于是求解 $x-k$ 后再加上 $k$ 就是原方程的解啦。
-
-注意，不排除解小于等于 $k$ 的情况，所以在消因子之前做一下 $\Theta(k)$ 枚举，直接验证 $a^i\equiv b \pmod p$，这样就能避免这种情况。
-
-\begin{itemize}
-    \item 注意，inv 必须由扩欧求！
-    \item 注意开 long long
-    \item 前置：ksm, exgcd求逆元
-\end{itemize}
-\lstinputlisting{code/ExBSGS.cpp}
-
-%--------------------------------------------------------------------
-\subsection{逆元}
-
-\subsubsection{exgcd求逆元}
-\begin{itemize}
-    \item 前置：exgcd
-    \item $(x,p)=1$
-\end{itemize}
-\lstinputlisting{code/exgcd求逆元.cpp}
-
-\subsubsection{快速幂求逆元}
-
-根据费马小定理：$p\in primes\to a^{-1}\equiv a^{p - 2}\pmod{p}$
-
-\subsubsection{整数除法取模}
-如果 $\dfrac{a}{b}\in \mathbb{N}$, $b\times p$ 可以在计算机中表示，那么 $\dfrac{a}{b}\bmod p=\dfrac{a\bmod(p\times b)}{b}$
-%--------------------------------------------------------------------
-\subsection{上下取整}
-\begin{itemize}
-    \item $b$ 必须为正整数。
-\end{itemize}
-\lstinputlisting{code/上下取整.cpp}
-%--------------------------------------------------------------------
-\subsection{线性基}
-\begin{itemize}
-    \item $O(\log x)$ insert
-    \item $O(\log^2 x)$ get-kth
-    \item $O(\log x)$ get-max
-    \item 如果问能否通过选一些数（不能不选）异或得到0，必须特判。
-\end{itemize}
-\lstinputlisting{code/线性基.cpp}
-%--------------------------------------------------------------------
-\subsection{高斯消元}
-\begin{itemize}
-    \item equ 是方程个数，n 是变元个数，答案存在 ans。
-    \item return : 无解(-1)，自由变元个数。
-\end{itemize}
-
-\subsubsection{解异或线性方程组}
-\lstinputlisting{code/01高斯消元.cpp}
-
-\subsubsection{解double线性方程组}
-\lstinputlisting{code/double高斯消元.cpp}
-
-\subsubsection{解模意义线性方程组}
-\begin{itemize}
-    \item 时间复杂度 $O(n^3 \log{mod})$
-\end{itemize}
-\lstinputlisting{code/模意义高斯消元.cpp}
-%--------------------------------------------------------------------
-\subsection{Miller-Rabin}
-\begin{itemize}
-    \item 前置：快速幂(\_\_int128!!!)
-    \item int 范围: {2, 7, 61}
-    \item long long 范围: {2, 325, 9375, 28178, 450775, 9780504, 1795265022}
-    \item 4E13: {2, 2570940, 211991001, 3749873356}
-    \item 3E15: {2, 2570940, 880937, 610386380, 4130785767}
-    \item 注意看判断范围是 int 还是 long long
-\end{itemize}
-
-\lstinputlisting{code/miller-rabin.cpp}
-%--------------------------------------------------------------------
-\subsection{Pollard-Rho}
-\begin{itemize}
-    \item 前置：Miller-Rabin
-\end{itemize}
-
-\lstinputlisting{code/Pollard-Rho.cpp}
-%--------------------------------------------------------------------
+\lstinputlisting{code/math/min25.cpp}
 
 
-%--------------------------------------------------------------------
-\subsection{多项式全家桶}
-\begin{itemize}
-    \item 注意调整原根g，模数mod，N开3到4倍数据范围，附录A
-    \item 注意resize()
-    \item 注意Inv/Ln的时候常数项不能为0
-    \item 注意Exp的时候常数项必须是0
-    \item 注意这里面的 ksm() 第三个参数是初值而不是模数
-\end{itemize}
-\lstinputlisting{code/NTT.cpp}
 
-%--------------------------------------------------------------------
-\subsection{数学公式}
-
-\subsubsection{多项式牛顿迭代}
-
-
-\subsubsection{生成函数/形式幂级数}
-
-\subsubsection{莫比乌斯反演}
-
-\subsubsection{分配问题}
+\subsection{分配问题}
 
 \begin{enumerate}
     \item $n$ 个球放到 $k$ 个盒子，每个盒子只有一种形态。
@@ -249,7 +92,7 @@ $$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
     $$
 \end{enumerate}
 
-\subsubsection{第二类斯特林数}
+\subsection{第二类斯特林数}
 
 性质：
 \begin{enumerate}
@@ -260,7 +103,7 @@ $$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
     \item 关于 $n$ 的 $e.g.f.=\dfrac{(e^x-1)^k}{k!}$ （考虑将 $n$ 个物品染成 $k$ 种颜色，每一种物品的指数生成函数为 $e^x-1$ ）（用于求第二类斯特林数·列）
 \end{enumerate}
 
-\subsubsection{第一类斯特林数}
+\subsection{第一类斯特林数}
 
 性质：
 \begin{enumerate}
@@ -272,7 +115,7 @@ $$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
     \item 关于 $n$ 的 $e.g.f.=\dfrac{(-\ln(1-x))^k}{k!}$. (列)
 \end{enumerate}
 
-\subsubsection{分拆数}
+\subsection{分拆数}
 
 性质：
 \begin{enumerate}
@@ -280,7 +123,7 @@ $$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
     \item $o.g.f. = x^k \prod\limits_{i=1}^k \frac{1}{1-x^i}$ （考虑 Ferrers 图中长度为 $i$ 的一列有多少个）
 \end{enumerate}
 
-\subsubsection{五边形数}
+\subsection{五边形数}
 
 性质：
 \begin{enumerate}
@@ -296,7 +139,7 @@ $$ \frac{a^k}{D}\cdot a^{x-k}\equiv\frac{b}{D} \pmod{\frac{p}{D}} $$
         \end{enumerate}
 \end{enumerate}
 
-\subsubsection{Polya}
+\subsection{Polya}
 
 \paragraph{置换群}\
 
