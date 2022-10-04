@@ -264,14 +264,25 @@ namespace Polynomial {
         }
         return ans;
     }
+    Poly mulT(Poly a, Poly b) {
+        int n = a.size(), m = b.size();
+        reverse(b.begin(), b.end());
+        a = a * b;
+        for(int i = 0; i < n; i++) {
+            a[i] = a[i + m - 1];
+        }
+        a.resize(n);
+        return a;
+    }
     // x是点，a是多项式
-    vector<int> eval(Poly &a, vector<int> &x) {
-        int m = x.size() - 1;
-        vector<int> ans(m + 1);
+    vector<int> eval(Poly a, vector<int> x) {
+        int m = max(x.size(), a.size());
+        vector<int> ans(x.size());
+        x.resize(m + 1);
         vector<Poly> divd(4 * m);
         function<void(int, int, int)> divide_mul = [&](int l, int r, int id) -> void {
             if(l == r) {
-                divd[id] = Poly({mod - x[l], 1});
+                divd[id] = Poly{1, (mod - x[l]) % mod};
                 return;
             }
             int mid = l + r >> 1;
@@ -280,15 +291,19 @@ namespace Polynomial {
         };
         function<void(int, int, int, Poly)> getans = [&](int l, int r, int id, Poly now) -> void {
             if(l == r) {
-                ans[l] = now[0];
+                if(l < ans.size()) {
+                    ans[l] = now[0];
+                }
                 return;
             }
             int mid = l + r >> 1;
-            getans(l, mid, id << 1, (now % divd[id << 1]).second);
-            getans(mid + 1, r, id << 1 | 1, (now % divd[id << 1 | 1]).second);
+            now.resize(r - l + 2);
+            getans(l, mid, id << 1, mulT(now, divd[id << 1 | 1]));
+            getans(mid + 1, r, id << 1 | 1, mulT(now, divd[id << 1]));
         };
-        divide_mul(1, m, 1);
-        getans(1, m, 1, a);
+        divide_mul(0, m - 1, 1);
+        a.resize(m);
+        getans(0, m - 1, 1, mulT(a, Inv(divd[1])));
         return ans;
     }
 }

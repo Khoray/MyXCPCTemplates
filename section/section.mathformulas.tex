@@ -2,6 +2,27 @@
 
 \subsection{多项式牛顿迭代}
 
+\subsection{牛顿恒等式}
+设 $E(x)=1+e_1x+e_2x^2+...$.
+
+\begin{equation*}
+    \begin{aligned}
+        \prod_{i=1}^n (1+a_ix)&=E(x)\\
+        (\ln \prod_{i=1}^n (1+a_ix))'&=E'(x)/E(x)\\
+        \sum_{i=1}^n \frac{a_i}{1+a_ix}&=E'(x)/E(x)\\
+        E'(x)/E(x)&=\sum_{i=1}^n\sum_{j\ge 0}(-1)^{j}a_i^{j+1}x^j\\
+        &=\sum_{j\ge 0}(-1)^j\left(\sum_{i=1}^n a_i^{j+1}\right)x^j\\
+        &=\sum_{j\ge 0}(-1)^j p_{j+1} x^j
+    \end{aligned}
+\end{equation*}
+
+结论：
+\begin{equation*}
+    \begin{aligned}
+        ke_k&=\sum_{i=1}^{k}(-1)^{i-1}e_{k-i}p_i\\
+        0&=\sum_{i=k-n}^k(-1)^{i-1}e_{k-i}p_i
+    \end{aligned}
+\end{equation*}
 
 \subsection{生成函数/形式幂级数}
 
