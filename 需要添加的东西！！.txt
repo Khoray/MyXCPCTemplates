@@ -1,0 +1,6 @@
+牛顿恒等式
+对拍（linux和windows）
+数列公式
+checkntt
+泰勒展开
+matrixTree
