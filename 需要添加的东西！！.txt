@@ -2,5 +2,10 @@
 对拍（linux和windows）
 数列公式
 checkntt
+二进制求子集和
 泰勒展开
 matrixTree
+PN筛
+原根表
+提醒表！！！！！
+中国剩余定理

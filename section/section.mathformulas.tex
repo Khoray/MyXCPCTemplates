@@ -3,6 +3,8 @@
 \subsection{多项式牛顿迭代}
 
 \subsection{牛顿恒等式}
+设 $p_k$ is k-th power sum, $p_k=\sum_{i=1}^n a_i^k$，$e_k$ 是$k$个$a$的轮换和。
+
 设 $E(x)=1+e_1x+e_2x^2+...$.
 
 \begin{equation*}
@@ -19,13 +21,49 @@
 结论：
 \begin{equation*}
     \begin{aligned}
-        ke_k&=\sum_{i=1}^{k}(-1)^{i-1}e_{k-i}p_i\\
-        0&=\sum_{i=k-n}^k(-1)^{i-1}e_{k-i}p_i
+        ke_k&=\sum_{i=1}^{k}(-1)^{i-1}e_{k-i}p_i &(k\le n)\\
+        0&=\sum_{i=k-n}^k(-1)^{i-1}e_{k-i}p_i&(k>n)
     \end{aligned}
 \end{equation*}
 
-\subsection{生成函数/形式幂级数}
+\begin{equation*}
+    \begin{aligned}
+        e_1 &=p_1 \\
+        2 e_2 &=e_1 p_1-p_2=p_1^2-p_2 \\
+        3 e_3 &=e_2 p_1-e_1 p_2+p_3=\frac{1}{2} p_1^3-\frac{3}{2} p_1 p_2+p_3 \\
+        4 e_4 &=e_3 p_1-e_2 p_2+e_1 p_3-p_4=\frac{1}{6} p_1^4-p_1^2 p_2+\frac{4}{3} p_1 p_3+\frac{1}{2} p_2^2-p_4,\\
+        e_k(k>n)&=0
+    \end{aligned}
+\end{equation*}
 
+
+\begin{equation*}
+    \begin{aligned}
+        &p_1=e_1 \\
+        &p_2=e_1 p_1-2 e_2=e_1^2-2 e_2 \\
+        &p_3=e_1 p_2-e_2 p_1+3 e_3=e_1^3-3 e_1 e_2+3 e_3 \\
+        &p_4=e_1 p_3-e_2 p_2+e_3 p_1-4 e_4=e_1^4-4 e_1^2 e_2+4 e_1 e_3+2 e_2^2-4 e_4,\\
+        &p_k=(-1)^{k-1} k e_k+\sum_{i=1}^{k-1}(-1)^{k-1+i} e_{k-i}\left(x_1, \ldots, x_n\right) p_i (k\le n)\\
+        &p_k=\sum_{i=k-n}^{k-1}(-1)^{k-1+i} e_{k-i} p_i (k>n)
+    \end{aligned}
+\end{equation*}
+
+
+
+
+\subsection{生成函数/形式幂级数}
+\subsubsection{麦克劳林展开}
+\begin{equation*}
+    \begin{aligned}
+        &\frac{1}{1-x}=1+x+\cdots+x^n+\cdots\\
+        &\frac{1}{1+x}=1-x+x^2+\cdots+(-1)^n x^n+\cdots\\
+        &\ln (1+x)=x-\frac{x^2}{2}+\cdots+\frac{(-1)^{n-1} x^n}{n}+\cdots\\
+        &\mathrm{e}^x=1+x+\cdots+\frac{x^n}{n !}+\cdots\\
+        &(1+x)^\alpha=1+\alpha x+\frac{\alpha(\alpha-1)}{2 !} x^2+\cdots+\frac{\alpha(\alpha-1)\cdots(\alpha-n+1)}{n!}+\cdots\\
+        &\sin x=\frac{x^3}{3 !}+\cdots+\frac{(-1)^n x^{2 n+1}}{(2 n+1) !}+\cdots\\
+        &\cos x=1-\frac{x^2}{2 !}+\cdots+\frac{(-1)^n x^{2 n}}{(2 n) !}+\cdots\\
+    \end{aligned}
+\end{equation*}
 \subsection{数论公式}
 \subsubsection{莫比乌斯反演}
 一般反演:
