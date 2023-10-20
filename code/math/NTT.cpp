@@ -138,10 +138,10 @@ namespace Polynomial {
 
     // Poly MUL
     Poly operator*(Poly a, Poly b) {
-        int n = a.size() + b.size() - 1, L = norm(n);
+        int n = (int) a.size() + b.size() - 1, L = norm(n);
         if(a.size() <= 8 || b.size() <= 8) {
             Poly c(n);
-            fp(i, 0, a.size() - 1) fp(j, 0, b.size() - 1)
+            fp(i, 0, (int) a.size() - 1) fp(j, 0, (int) b.size() - 1)
             c[i + j] = (c[i + j] + (ll) a[i] * b[j]) % mod;
             return c;
         }
@@ -243,6 +243,7 @@ namespace Polynomial {
     }
 
     // a0, a1,..., a_{k-1}, f1, f2, ..., fk
+    // fi = sum{i=1,k} fi*a[i-k]
     // a 是值，f 是递推系数
     // 常系数齐次线性递推
     int LinearRecursion(vector<int> &a, vector<int> &f, int n) {
@@ -275,6 +276,7 @@ namespace Polynomial {
         return a;
     }
     // x是点，a是多项式
+    // x0,x1,...,xn-1
     vector<int> eval(Poly a, vector<int> x) {
         int m = max(x.size(), a.size());
         vector<int> ans(x.size());
@@ -305,6 +307,44 @@ namespace Polynomial {
         a.resize(m);
         getans(0, m - 1, 1, mulT(a, Inv(divd[1])));
         return ans;
+    }
+    // x1,x2,...,xn, y1,y2,...,yn
+    Poly Interpolation(vector<int> x, vector<int> y) {
+        int n = x.size() - 1;
+        vector<int> ans(n + 1);
+        vector<Poly> divd(4 * n);
+        auto divide_mul = [&](auto divide_mul, int l, int r, int id) -> void {
+            if(l == r) {
+                divd[id] = Poly({mod - x[l], 1});
+                return;
+            }
+            int mid = l + r >> 1;
+            divide_mul(divide_mul, l, mid, id << 1), divide_mul(divide_mul, mid + 1, r, id << 1 | 1);
+            divd[id] = divd[id << 1 | 1] * divd[id << 1];
+        };
+        auto getans = [&](auto getans, int l, int r, int id, Poly now) -> void {
+            if(l == r) {
+                ans[l] = now[0];
+                return;
+            }
+            int mid = l + r >> 1;
+            // Poly left = now % divd[id<<1];
+            // Poly right = now % divd[id<<1|1];
+            getans(getans, l, mid, id<<1, (now % divd[id << 1]).second);
+            getans(getans, mid + 1, r, id<<1|1, (now % divd[id << 1 | 1]).second);
+        };
+        divide_mul(divide_mul, 1, n, 1);
+        Poly a = deriv(divd[1]);
+        getans(getans, 1, n, 1, a);
+        auto get_poly = [&](auto get_poly, int l, int r, int id) -> Poly {
+            if(l == r) {
+                Poly ret = { (int) (1ll * y[l] * ksm(ans[l], mod - 2) % mod) };
+                return ret;
+            }
+            int mid = l + r >> 1;
+            return get_poly(get_poly, l, mid, id<<1) * divd[id<<1|1] + get_poly(get_poly, mid + 1, r, id<<1|1) * divd[id<<1];
+        };
+        return get_poly(get_poly, 1, n, 1);
     }
 }
 using namespace Polynomial;
