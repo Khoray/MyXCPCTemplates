@@ -1,9 +1,9 @@
 # Fdb version 3
-["xdvipdfmx"] 1697780598 "d:/document/khorayCPtemplate/main.xdv" "d:/document/khorayCPtemplate/main.pdf" "d:/document/khorayCPtemplate/main" 1697780606
-  "d:/document/khorayCPtemplate/main.xdv" 1697780598 1381636 b5a3823a1cc44b44391ecd11b02980e6 "xelatex"
+["xdvipdfmx"] 1697781105 "d:/document/khorayCPtemplate/main.xdv" "d:/document/khorayCPtemplate/main.pdf" "d:/document/khorayCPtemplate/main" 1697781126
+  "d:/document/khorayCPtemplate/main.xdv" 1697781105 1432236 ae1f7f4343526125d8c700c9a7141c84 "xelatex"
   (generated)
   "d:/document/khorayCPtemplate/main.pdf"
-["xelatex"] 1697780588 "d:/document/khorayCPtemplate/main.tex" "d:/document/khorayCPtemplate/main.xdv" "main" 1697780606
+["xelatex"] 1697781096 "d:/document/khorayCPtemplate/main.tex" "d:/document/khorayCPtemplate/main.xdv" "main" 1697781125
   "code/math/ExBSGS.cpp" 1648127956 1046 2fc64139c4d6d5cfeb364ad119af0dec ""
   "code/math/ExGCD.cpp" 1648123906 329 c44357eaf462f59e2a4e08ee8c6c8047 ""
   "code/math/FFT.cpp" 1660968751 3729 7dab6c6bfc65b344d70017d934f089e1 ""
@@ -15,8 +15,9 @@
   "code/misc/Texas_poker.cpp" 1662543889 4507 f6af23f882fff23c448d107960f584ed ""
   "code/misc/debuger.cpp" 1659698455 1460 1118bc31ab0a7527afd7426eb50f6615 ""
   "code/misc/expressionparser.cpp" 1665396065 2816 ef2d4fe98c76c3a1238e524604625bcf ""
+  "code/misc/km.cpp" 1697781060 1750 66fcb0439902baf26aef25ea33c244cd ""
   "code/misc/yuangen.cpp" 1667490440 1307 44dc17da37d197ec8a18f436e89fefe5 ""
-  "d:/document/khorayCPtemplate/main.aux" 1697780598 10302 f3ec52dde613d6d6a0d28cf79995955a ""
+  "d:/document/khorayCPtemplate/main.aux" 1697781105 10547 413efa8036d07de4b7874320e58da51a ""
   "d:/document/khorayCPtemplate/main.tex" 1697780584 2638 d05d7b81a5caa2e41ab71f32972d7701 ""
   "e:/Program Files/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1630380965 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "e:/Program Files/texlive/2021/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1630383040 1528 7e12f4c0fcf5a072cebdcfbfc610f54c ""
@@ -118,19 +119,19 @@
   "e:/Program Files/texlive/2021/texmf-dist/web2c/texmf.cnf" 1630381308 39972 3d6bb4d9d719e93193fa020b58adf5d4 ""
   "e:/Program Files/texlive/2021/texmf-var/web2c/xetex/xelatex.fmt" 1630383229 5094010 6a8f0cbd8555f5a8aedb6f4796a76644 ""
   "e:/Program Files/texlive/2021/texmf.cnf" 1630383059 713 e69b156964470283e0530f5060668171 ""
-  "main.aux" 1697780598 10302 f3ec52dde613d6d6a0d28cf79995955a "xelatex"
-  "main.out" 1697780598 5359 5219a0cb9cec0a4cfd8343a25405beea "xelatex"
+  "main.aux" 1697781105 10547 413efa8036d07de4b7874320e58da51a "xelatex"
+  "main.out" 1697781105 5531 6bf0f8fbbcd9a81bfa6982bbee8a5183 "xelatex"
   "main.tex" 1697780584 2638 d05d7b81a5caa2e41ab71f32972d7701 ""
-  "main.toc" 1697780598 4408 1d9a72c0bb3edeb5a7383a685fcd31df "xelatex"
+  "main.toc" 1697781105 4505 fd9dd691e2e002de0c0f697d4823c48d "xelatex"
   "section/section.ds.tex" 1667401240 432 60d4c155d1f5dc1ed55fe3865b3a236a ""
   "section/section.math.tex" 1667399750 8507 f9c810baae9876a1577e15655e07f56a ""
   "section/section.mathformulas.tex" 1667490109 13673 9ba7fdd9a8c2bbd12092da37b2e873e9 ""
-  "section/section.misc.tex" 1667629660 783 7d20507f5cf3fee8c7a831bc809d4839 ""
+  "section/section.misc.tex" 1697781052 866 0c30dcef4446abfb1e8e394ce0c393a2 ""
   (generated)
-  "main.log"
   "main.out"
+  "main.log"
+  "d:/document/khorayCPtemplate/main.log"
   "main.aux"
   "main.toc"
   "main.xdv"
-  "d:/document/khorayCPtemplate/main.log"
   "d:/document/khorayCPtemplate/main.xdv"
