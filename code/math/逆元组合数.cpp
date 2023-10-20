@@ -20,6 +20,6 @@ int inv[N];
 void init_inv() {
     inv[0] = inv[1] = 1;
     for(int i = 2; i < N; i++) {
-        inv[i] = (mod - mod / i) * inv[mod % i] % mod;
+        inv[i] = (ll) (mod - mod / i) * inv[mod % i] % mod;
     }
 }

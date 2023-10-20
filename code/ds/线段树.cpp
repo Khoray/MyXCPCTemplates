@@ -1,106 +1,133 @@
-template<class S, S (*merge)(S, S), S (*s_id)(), class F, S (*mapping)(F, S), F (*composition)(F, F), F (*f_id)()>
-struct lazy_segment_tree {
+#include<bits/stdc++.h>
+using namespace std;
+int mod;
+struct info {
+    int sum;
     int sz;
-    vector<S> a;
-    struct node {
-        int l, r;
-        S val;
-        F tag;
-        node *lc, *rc;
-    };
-    
-    node *root;
-    lazy_segment_tree(int n) : sz(n), a(n + 1), root(new node()) {}
-    lazy_segment_tree(vector<S> &x) : sz(x.size() - 1), a(x), root(new node()) { build(root, 1, sz); }
-
-    void build(node *now, int L, int R) {
-        now->l = L, now->r = R, now->val = s_id(), now->tag = f_id();
-        if(L == R) {
-            now->val = a[L];
-            return;
-        }
-        int mid = L + R >> 1;
-        build(now->lc = new node(), L, mid);
-        build(now->rc = new node(), mid + 1, R);
-        now->val = merge(now->lc->val, now->rc->val);
-    }
-    
-    void build(int L, int R) {
-    	build(root, L, R);
-	}
-
-    S query(node *now, int L, int R) {
-        if(now->l > R || now->r < L) return s_id();
-        if(now->l >= L && now->r <= R) return now->val;
-        push_down(now);
-        return merge(query(now->lc, L, R), query(now->rc, L, R));
-    }
-    
-    S query(int L, int R) {
-    	return query(root, L, R);
-	}
-
-    void update(node *now, int pos, S val) {
-        if(now->l == now->r && now->l == pos) {
-            now->val = val;
-            return;
-        }
-        int mid = now->l + now->r >> 1;
-        push_down(now);
-        update(pos <= mid ? now->lc : now->rc, pos, val);
-        now->val = merge(now->lc->val, now->rc->val);
-    }
-    
-    void update(int pos, S val) {
-    	update(root, pos, val);
-	}
-
-    void push_down(node *now) {
-        now->lc->val = mapping(now->tag, now->lc->val);
-        now->rc->val = mapping(now->tag, now->rc->val);
-        now->lc->tag = composition(now->tag, now->lc->tag);
-        now->rc->tag = composition(now->tag, now->rc->tag);
-        now->tag = f_id();
-    }
-
-    void update_range(node *now, int L, int R, F f) {
-        if(now->l > R || now->r < L) return;
-        if(now->l >= L && now->r <= R) {
-            now->val = mapping(f, now->val);
-            now->tag = composition(f, now->tag);
-            return;
-        }
-        push_down(now);
-        update_range(now->lc, L, R, f);
-        update_range(now->rc, L, R, f);
-        now->val = merge(now->lc->val, now->rc->val);
-    }
-    
-    void update_range(int L, int R, F f) {
-    	update_range(root, L, R, f);
-	}
-
-	template<class T>
-    pair<int, S> find_r(node *now, int pos, S now_val, T check_val) {
-        // 如果线段树的区间完全小于要查询的点
-        if(now->r < pos) return {sz + 1, s_id()};
-        // 如果线段树的区间完全大于要查询的点        
-        if(now->l >= pos) {
-            S all_val = merge(now_val, now->val);
-            if(check_val(all_val)) return {sz + 1, all_val};
-            if(now->l == now->r) return {now->l, all_val};
-        }
-        // 如果不满足条件，在这个区间内二分
-        auto [lp, lval] = find_r(now->lc, pos, now_val, check_val);
-        if(lp != sz + 1) {
-            return {lp, lval};
-        } else {
-            return find_r(now->rc, pos, lval, check_val);
-        }
-    }
-    
-    template<class T>
-    pair<int, S> find_r(int pos, S now_val, T check_val) {
-    	return find_r(root, pos, now_val, check_val);
-	}
 };
+struct F {
+    int add, mul;
+};
+inline info merge(info a, info b) {
+    return {(a.sum + b.sum) % mod, (a.sz + b.sz) % mod};
+}
+inline info mapping(F f, info a) {
+    return {(1ll * a.sum * f.mul % mod + 1ll * f.add * a.sz % mod) % mod, a.sz};
+}
+// f作用于g
+inline F comp(F f, F g) {
+    return {(1ll * g.add * f.mul % mod + f.add) % mod, 1ll * f.mul * g.mul % mod};
+}
+const int N = 1e5 + 1;
+struct segmenttree {
+
+    info tr[N << 2];
+    F tag[N << 2];
+    int treel[N << 2], treer[N << 2];
+    void build(int u, int l, int r, vector<int> &a) {
+        treel[u] = l;
+        treer[u] = r;
+        tag[u] = {0, 1};
+        if(l == r) {
+            tr[u].sum = a[l];
+            tr[u].sz = 1;
+            return;
+        }
+        int mid = l + r >> 1;
+        build(u << 1, l, mid, a);
+        build(u << 1 | 1, mid + 1, r, a);
+        tr[u] = merge(tr[u << 1], tr[u << 1 | 1]);
+    }
+
+    void pushdown(int u) {
+        tr[u << 1] = mapping(tag[u], tr[u << 1]);
+        tr[u << 1 | 1] = mapping(tag[u], tr[u << 1 | 1]);
+        tag[u << 1] = comp(tag[u], tag[u << 1]);
+        tag[u << 1 | 1] = comp(tag[u], tag[u << 1 | 1]);
+        tag[u] = {0, 1};
+    }
+
+    info query(int u, int L, int R) {
+        if(treel[u] > R || treer[u] < L) return {0, 0};
+        if(treel[u] >= L && treer[u] <= R) {
+            return tr[u];
+        }
+        pushdown(u);
+        int mid = treel[u] + treer[u] >> 1;
+        return merge(
+            query(u << 1, L, R),
+            query(u << 1 | 1, L, R)
+        );
+    }
+
+    void modify(int u, int L, int R, F f) {
+        if(treel[u] > R || treer[u] < L) return;
+        if(treel[u] >= L && treer[u] <= R) {
+            tr[u] = mapping(f, tr[u]);
+            tag[u] = comp(f, tag[u]);
+            return;
+        }
+        pushdown(u);
+        modify(u << 1, L, R, f);
+        modify(u << 1 | 1, L, R, f);
+        tr[u] = merge(tr[u << 1], tr[u << 1 | 1]);
+    }
+
+    template<typename Check>
+    int max_right(int u, info &s, int l, int r, int L, Check check) {
+        if(r < L) return -1;
+        if(l >= L) {
+            info ss = merge(s, tr[u]);
+            if(check(ss)) {
+                s = ss;
+                return -1;
+            }
+            if(l == r) return l;
+        }
+        pushdown(u);
+        int mid = l + r >> 1;
+        int pos = max_right(u << 1, s, l, mid, L, check);
+        if(pos != -1) return pos;
+        return max_right(u << 1 | 1, s, mid + 1, r, L, check);
+    }
+
+
+};
+
+segmenttree segt;
+signed main() {
+    int n, m;
+
+    cin >> n >> m;
+    cin >> mod;
+
+    vector<int> a(n + 1);
+    for(int i = 1; i <= n; i++) cin >> a[i];
+    
+    segt.build(1, 1, n, a);
+
+    while(m--) {
+        int op; cin >> op;
+        if(op == 1) {
+            int l, r; cin >> l >> r;
+            int mul; cin >> mul;
+            segt.modify(1, l, r, {0, mul});
+        } else if(op == 2) {
+            int l, r, add; cin >> l >> r >> add;
+            segt.modify(1, l, r, {add, 1});
+        } else if(op == 3) {
+            int l, r; cin >> l >> r;
+            info x = segt.query(1, l, r);
+            cout << x.sum << "\n";
+        } else if(op == 4) {
+            int l, val; cin >> l >> val;
+            info u = {0, 0};
+            int pos = segt.max_right(1, u, 1, n, l, [&] (info x) {
+                return x.sum <= val;
+            });
+            cout << pos << "\n";
+        }
+    }
+
+    return 0;
+}

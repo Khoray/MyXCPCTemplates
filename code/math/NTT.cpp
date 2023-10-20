@@ -26,8 +26,8 @@ public:
     pair<int, int> sqrt(int n) {
         int a = rand(), x;
         if(!(n %= mod)) return {0, 0};
-        if(ksm(n, (mod - 1) >> 1, 1ll) == mod - 1) return {-1, -1};
-        while(ksm(I2 = ((ll) a * a - n + mod) % mod, (mod - 1) >> 1, 1ll) == 1) a = rand();
+        if(ksm(n, (mod - 1) >> 1, 1) == mod - 1) return {-1, -1};
+        while(ksm(I2 = ((ll) a * a - n + mod) % mod, (mod - 1) >> 1, 1) == 1) a = rand();
         x = (int) ksm(pll{a, 1}, (mod + 1) >> 1, {1, 0}).X;
         if(2 * x > mod) x = mod - x;
         return {x, mod - x};
@@ -169,7 +169,7 @@ namespace Polynomial {
     // Poly div / mod
     Poly operator/(Poly a, Poly b) {
         int k = a.size() - b.size() + 1;
-        if(k < 0) return {0};
+        if(k < 0) return {0}; // TODO：这里是否应该是 k<=0??
         reverse(a.begin(), a.end());
         reverse(b.begin(), b.end());
         b.resize(k), a = a * Inv(b);
