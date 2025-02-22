@@ -137,6 +137,23 @@ struct LazySegmentTree {
         };
         return dfs(dfs, 1, 1, _n, p, x);
     }
+    
+    // return a[1] .. a[n]
+    vector<S> get_all() {
+        vector<S> ret(_n + 1);
+        auto dfs = [&] (auto&& dfs, int u, int l, int r) -> void {
+            if(l == r) {
+                ret[l] = a[u];
+                return;
+            }
+            pushdown(u);
+            int mid = (l + r) / 2;
+            dfs(dfs, u << 1, l, mid);
+            dfs(dfs, u << 1 | 1, mid + 1, r);
+        };
+        dfs(dfs, 1, 1, _n);
+        return ret;
+    }
 
     // binary search a `L<=r<=_n`: check(op(a[L]..a[r-1]))=true, check(op(a[L]..a[r]))=false
     // if not exist: return -1
