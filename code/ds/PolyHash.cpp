@@ -74,5 +74,5 @@ using Hash::PolyHash;
 signed main() {
     string s = "01321232";
     PolyHash ph = PolyHash(s);
-    cout << ph.get_hash(2, 1) << " " << ph.get_hash(6, 7) << '\n';
+    cout << ph.get_hash(2, 3) << " " << ph.get_hash(6, 7) << '\n';
 }
